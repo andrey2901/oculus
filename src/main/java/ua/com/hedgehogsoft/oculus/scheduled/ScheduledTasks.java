@@ -8,8 +8,11 @@ import ua.com.hedgehogsoft.oculus.model.Task;
 import ua.com.hedgehogsoft.oculus.repository.OrderRepository;
 import ua.com.hedgehogsoft.oculus.repository.TaskRepository;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
+
+import static java.time.temporal.ChronoUnit.MONTHS;
 
 @Component
 public class ScheduledTasks {
@@ -25,8 +28,28 @@ public class ScheduledTasks {
         List<Task> tasks = taskRepository.findAll();
         Task task = tasks.get(0);
         LocalDate today = LocalDate.now();
-        if (today.isEqual(task.getNextExecution()) || today.isAfter(task.getNextExecution())) {
-            List<Order> orders = orderRepository.findAll();
+        LocalDate nextExecution = task.getNextExecution();
+        LocalDate lastExecuted = task.getLastExecuted();
+        if (today.isEqual(nextExecution) || today.isAfter(nextExecution)) {
+            List<Order> orders = orderRepository.findArchived(true);
+            long months = MONTHS.between(lastExecuted, today);
+            switch(Long.toString(months)){
+                case "0":
+                case "1":
+                    System.out.println("!!!Print one report");
+                    break;
+                case "2":
+                    System.out.println("!!!Print two report");
+                    break;
+                default:
+                    System.out.println("!!!Print default report");
+                    break;
+            }
+            orders.forEach(o -> {
+                System.out.print("!!!" + o.getOrderNumber());
+                System.out.print(":");
+                System.out.println(o.isArchive());
+            });
         }
     }
 }
