@@ -1,0 +1,76 @@
+table.table {
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    border-collapse: collapse;
+}
+
+.table, table.table th {
+    border: solid grey;
+}
+
+table.table td, table.table tr {
+    border: 1px solid;
+}
+
+table.table tr.constructor {
+    border-top: 3px solid grey;
+}
+
+table.table tr.empty {
+    height: 37px;
+}
+
+button.own {
+    width: 100px;
+    padding: 0px 0px;
+}
+
+button a {
+    padding: 10px 16px;
+    display: block;
+    color: #fff;
+    text-decoration: none;
+}
+
+button.btn-primary a:hover {
+    color: #fff;
+    text-decoration: none;
+}
+
+div.fixed {
+    position: fixed;
+    bottom: 5px;
+    right: 5px;
+    text-align: center;
+}
+
+table.table td.order {
+    text-align: center;
+    padding: 2px 8px;
+}
+
+table.table td.order a {
+    font-size: 12px;
+}
+
+div.img_date {
+    position: relative;
+}
+
+img.img_date {
+    height: 25px;
+    position: absolute;
+    right: 5px;
+    top: 8px;
+    cursor: pointer;
+    border: 1px solid red;
+}
+
+td.green {
+    color: limegreen;
+}
+
+td.red {
+    color: red;
+}
