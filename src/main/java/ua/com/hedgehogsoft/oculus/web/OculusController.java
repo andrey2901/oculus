@@ -1,21 +1,26 @@
 package ua.com.hedgehogsoft.oculus.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ua.com.hedgehogsoft.oculus.data.TableHeader;
 import ua.com.hedgehogsoft.oculus.model.Constructor;
 import ua.com.hedgehogsoft.oculus.model.Order;
+import ua.com.hedgehogsoft.oculus.print.ReportPrinter;
 import ua.com.hedgehogsoft.oculus.repository.ConstructorRepository;
 import ua.com.hedgehogsoft.oculus.repository.OrderRepository;
 import ua.com.hedgehogsoft.oculus.validator.ConstructorValidator;
 import ua.com.hedgehogsoft.oculus.validator.OrderValidator;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -38,6 +43,8 @@ public class OculusController {
     private ConstructorValidator constructorValidator;
     @Autowired
     private OrderValidator orderValidator;
+    @Autowired
+    private ReportPrinter reportPrinter;
 
     @RequestMapping(value = {"/"}, method = RequestMethod.GET)
     public String oculus(Model model) {
@@ -169,4 +176,41 @@ public class OculusController {
         orderRepository.delete(id);
         return "redirect:/conord?id=" + constructor.getId();
     }
+
+    @RequestMapping(value = "/print", method = RequestMethod.GET, produces = "application/pdf")
+    public ResponseEntity<InputStreamResource> getReport() throws FileNotFoundException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+
+        File pdfFile =  reportPrinter.print(true);
+
+        InputStream input = new FileInputStream(pdfFile);
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentType(MediaType.parseMediaType("application/pdf"))
+                .body(new InputStreamResource(input));
+    }
+
+    /*@RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/pdf")
+    public ResponseEntity<InputStreamResource> downloadPDFFile()
+            throws IOException {
+
+        ClassPathResource pdfFile = new ClassPathResource("pdf-sample.pdf");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentLength(pdfFile.contentLength())
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(new InputStreamResource(pdfFile.getInputStream()));
+    }*/
 }

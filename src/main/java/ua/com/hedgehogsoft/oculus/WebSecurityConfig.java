@@ -47,7 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                    .antMatchers("/resources/**", "/", "/archive*", "/all_archive").permitAll()
+                    .antMatchers("/resources/**", "/", "/archive*", "/all_archive", "/print").permitAll()
                     .anyRequest().authenticated()
                     .and()
                 .formLogin()
@@ -62,6 +62,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
     }
+
+    /*@Bean
+    public HttpMessageConverters customConverters() {
+        ByteArrayHttpMessageConverter arrayHttpMessageConverter = new ByteArrayHttpMessageConverter();
+        return new HttpMessageConverters(arrayHttpMessageConverter);
+    }*/
 
     /*@Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {

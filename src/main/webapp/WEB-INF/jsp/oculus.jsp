@@ -105,7 +105,8 @@
             <div class="btn btn-lg btn-primary btn-block own"><a onclick="document.forms['logoutForm'].submit()">Выйти</a>
             </div>
         </c:if>
-        <a href="${contextPath}/console">Консоль</a>
+        <a href="${contextPath}/console">Консоль</a><br>
+        <a href="${contextPath}/print">Печать</a>
     </div>
 </div>
 </body>
