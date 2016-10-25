@@ -1,9 +1,6 @@
 package ua.com.hedgehogsoft.oculus.print;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.PageSize;
+import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +12,8 @@ import java.io.IOException;
 public abstract class AbstractReportPrinter
 {
     protected Font font;
+    protected Font greenFont;
+    protected Font redFont;
     protected String fileName;
 
     @Value("${local.fonts}")
@@ -42,6 +41,13 @@ public abstract class AbstractReportPrinter
             BaseFont bf = BaseFont.createFont(fontLocation, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             font = new Font(bf);
             font.setSize(14);
+
+            greenFont = new Font(font);
+            greenFont.setColor(BaseColor.GREEN);
+
+            redFont = new Font(font);
+            redFont.setColor(BaseColor.RED);
+
             Document document = new Document(PageSize.A4, 0, 0, 30, 30);
             PdfWriter.getInstance(document, new FileOutputStream(file));
             document.open();
