@@ -178,21 +178,44 @@ public class OculusController {
         return "redirect:/conord?id=" + constructor.getId();
     }
 
-    @RequestMapping(value = "/print", method = RequestMethod.GET, produces = "application/pdf")
-    public ResponseEntity<InputStreamResource> getReport() throws FileNotFoundException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-        headers.add("Pragma", "no-cache");
-        headers.add("Expires", "0");
-
-        ByteArrayOutputStream os =  reportPrinter.print(true);
+    @RequestMapping(value = "/all_print", method = RequestMethod.GET, produces = "application/pdf")
+    public ResponseEntity<InputStreamResource> getFullReport() throws FileNotFoundException {
+        List<Constructor> constructors = constructorRepository.findAll();
+        Map<Constructor, List<Order>> constructorWithNotArchiveOrders =
+                constructors.stream().sorted(comparing(Constructor::getName)).collect(toMap(Function.identity(),
+                        (constructor) -> constructor.getOrders().stream().filter(order -> !order.isArchive())
+                                .sorted(comparing(Order::getPlannedDate)).collect(toList()), (o1, o2) -> o2, LinkedHashMap::new));
+        ByteArrayOutputStream os =  reportPrinter.print(constructorWithNotArchiveOrders, false);
         InputStream input = new ByteArrayInputStream(os.toByteArray());
+        return getResponse(input, getHeaders());
+    }
 
+    @RequestMapping(value = "/all_arch_print", method = RequestMethod.GET, produces = "application/pdf")
+    public ResponseEntity<InputStreamResource> getFullArchReport() throws FileNotFoundException {
+        List<Constructor> constructors = constructorRepository.findAll();
+        Map<Constructor, List<Order>> constructorArchiveOrders =
+                constructors.stream().sorted(comparing(Constructor::getName)).collect(toMap(Function.identity(),
+                        (constructor) -> constructor.getOrders().stream().filter(Order::isArchive)
+                                .sorted(comparing(Order::getPlannedDate)).collect(toList()), (o1, o2) -> o2, LinkedHashMap::new));
+        ByteArrayOutputStream os =  reportPrinter.print(constructorArchiveOrders, true);
+        InputStream input = new ByteArrayInputStream(os.toByteArray());
+        return getResponse(input, getHeaders());
+    }
+
+    private ResponseEntity getResponse(InputStream input, HttpHeaders headers){
         return ResponseEntity
                 .ok()
                 .headers(headers)
                 .contentType(MediaType.parseMediaType("application/pdf"))
                 .body(new InputStreamResource(input));
+    }
+
+    private HttpHeaders getHeaders(){
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+        return headers;
     }
 
     /*@RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/pdf")

@@ -10,30 +10,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ua.com.hedgehogsoft.oculus.model.Constructor;
 import ua.com.hedgehogsoft.oculus.model.Order;
-import ua.com.hedgehogsoft.oculus.repository.ConstructorRepository;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
-
-import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 
 @Component
 public class Printer {
-    protected Font font;
-    protected Font greenFont;
-    protected Font redFont;
-
-    @Value("${local.fonts}")
-    private String fontLocation;
+    private Font font;
+    private Font greenFont;
+    private Font redFont;
 
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
@@ -54,16 +44,13 @@ public class Printer {
         }
     }
 
-    @Autowired
-    private ConstructorRepository constructorRepository;
-
-    public ByteArrayOutputStream print(boolean isArchive) {
+    public ByteArrayOutputStream print(Map<Constructor, List<Order>> constructorsWithOrders, boolean isArchive) {
         try {
             Document document = new Document(PageSize.A4, 0, 0, 30, 30);
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             PdfWriter.getInstance(document, os);
             document.open();
-            setContent(document, isArchive);
+            setContent(document, constructorsWithOrders, isArchive);
             document.close();
             return os;
         } catch (DocumentException e) {
@@ -72,21 +59,15 @@ public class Printer {
         return null;
     }
 
-    public void setContent(Document document, boolean isArchive) throws DocumentException {
+    public void setContent(Document document, Map<Constructor, List<Order>> constructorsWithOrders, boolean isArchive) throws DocumentException {
         if (isArchive) {
-            printArchive(document);
+            printArchive(document, constructorsWithOrders);
         } else {
-            printWorkbook(document);
+            printWorkbook(document, constructorsWithOrders);
         }
     }
 
-    public void printArchive(Document document) throws DocumentException {
-        java.util.List<Constructor> constructors = constructorRepository.findAll();
-        Map<Constructor, java.util.List<Order>> constructorArchiveOrders =
-                constructors.stream().sorted(comparing(Constructor::getName)).collect(toMap(Function.identity(),
-                        (constructor) -> constructor.getOrders().stream().filter(Order::isArchive)
-                                .sorted(comparing(Order::getPlannedDate)).collect(toList()), (o1, o2) -> o2, LinkedHashMap::new));
-
+    public void printArchive(Document document, Map<Constructor, List<Order>> constructorsWithOrders) throws DocumentException {
         Paragraph paragraph = new Paragraph();
         paragraph.setFont(font);
         paragraph.setSpacingAfter(1);
@@ -176,7 +157,7 @@ public class Printer {
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         pdfTable.addCell(cell);
 
-        for (Map.Entry<Constructor, java.util.List<Order>> entry : constructorArchiveOrders.entrySet()) {
+        for (Map.Entry<Constructor, List<Order>> entry : constructorsWithOrders.entrySet()) {
             Constructor constructor = entry.getKey();
             java.util.List<Order> orders = entry.getValue();
             cell = new PdfPCell(new Phrase(constructor.getName(), font));
@@ -226,13 +207,7 @@ public class Printer {
         document.add(pdfTable);
     }
 
-    public void printWorkbook(Document document) throws DocumentException {
-        java.util.List<Constructor> constructors = constructorRepository.findAll();
-        Map<Constructor, java.util.List<Order>> constructorArchiveOrders =
-                constructors.stream().sorted(comparing(Constructor::getName)).collect(toMap(Function.identity(),
-                        (constructor) -> constructor.getOrders().stream().filter(order -> !order.isArchive())
-                                .sorted(comparing(Order::getPlannedDate)).collect(toList()), (o1, o2) -> o2, LinkedHashMap::new));
-
+    public void printWorkbook(Document document, Map<Constructor, List<Order>> constructorsWithOrders) throws DocumentException {
         Paragraph paragraph = new Paragraph();
         paragraph.setFont(font);
         paragraph.setSpacingAfter(1);
@@ -323,7 +298,7 @@ public class Printer {
         pdfTable.addCell(cell);
 
         int rowCount = 10;
-        for (Map.Entry<Constructor, java.util.List<Order>> entry : constructorArchiveOrders.entrySet()) {
+        for (Map.Entry<Constructor, List<Order>> entry : constructorsWithOrders.entrySet()) {
             Constructor constructor = entry.getKey();
             java.util.List<Order> orders = entry.getValue();
             cell = new PdfPCell(new Phrase(constructor.getName(), font));

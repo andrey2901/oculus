@@ -97,7 +97,8 @@
         </c:forEach>
     </table>
     <div class="fixed">
-        <div class="btn btn-lg btn-primary btn-block own"><a href="${contextPath}/all_archive">Архив</a></div>
+        <div class="btn btn-lg btn-primary btn-block own"><a href="${contextPath}/all_archive">Архив</a></div><br>
+        <div class="btn btn-lg btn-primary btn-block own"><a href="${contextPath}/all_print">Печать</a></div><br>
         <c:if test="${pageContext.request.userPrincipal.name != null}">
             <form id="logoutForm" method="POST" action="${contextPath}/logout">
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -105,8 +106,7 @@
             <div class="btn btn-lg btn-primary btn-block own"><a onclick="document.forms['logoutForm'].submit()">Выйти</a>
             </div>
         </c:if>
-        <a href="${contextPath}/console">Консоль</a><br>
-        <a href="${contextPath}/print">Печать</a>
+        <a href="${contextPath}/console">Консоль</a>
     </div>
 </div>
 </body>

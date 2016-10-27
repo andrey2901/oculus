@@ -90,7 +90,8 @@
         </c:forEach>
     </table>
     <div class="fixed">
-        <div class="btn btn-lg btn-primary btn-block own"><a href="${contextPath}/">Главная</a></div>
+        <div class="btn btn-lg btn-primary btn-block own"><a href="${contextPath}/">Главная</a></div><br>
+        <div class="btn btn-lg btn-primary btn-block own"><a href="${contextPath}/all_arch_print">Печать</a></div><br>
         <c:if test="${isOne}">
             <div class="btn btn-lg btn-primary btn-block own"><a href="${contextPath}/all_archive">Архив</a></div>
         </c:if>
