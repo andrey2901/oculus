@@ -13,6 +13,8 @@
 <body>
 <div class="container">
     <h2 style="text-align: center">Oculus</h2>
+    <c:set var="isOne" value="${con_ord_map.size() == 1}"/>
+    <c:set var="constr_id" value="-1"/>
     <table class="table">
         <tr>
             <c:forEach items="${tableHeaders}" var="tableHeader">
@@ -23,6 +25,9 @@
             <c:set value="${entry.key}" var="constructor"/>
             <c:set var="orders" value="${entry.value}"/>
             <c:set var="counter" value="${orders.size()}"/>
+            <c:if test="${isOne}">
+                <c:set var="constr_id" value="${constructor.id}"/>
+            </c:if>
             <c:choose>
                 <c:when test="${counter == 0}">
                     <tr class="constructor empty">
@@ -97,13 +102,26 @@
         </c:forEach>
     </table>
     <div class="fixed">
-        <div class="btn btn-lg btn-primary btn-block own"><a href="${contextPath}/all_archive">Архив</a></div><br>
-        <div class="btn btn-lg btn-primary btn-block own"><a href="${contextPath}/all_print">Печать</a></div><br>
+        <c:choose>
+            <c:when test="${isOne}">
+                <div class="btn btn-lg btn-primary btn-block own"><a href="${contextPath}/">Главная</a></div>
+                <br>
+                <div class="btn btn-lg btn-primary btn-block own"><a href="${contextPath}/print?id=${constr_id}">Печать</a></div>
+                <br>
+            </c:when>
+            <c:otherwise>
+                <div class="btn btn-lg btn-primary btn-block own"><a href="${contextPath}/all_print">Печать</a></div>
+                <br>
+            </c:otherwise>
+        </c:choose>
+        <div class="btn btn-lg btn-primary btn-block own"><a href="${contextPath}/all_archive">Архив</a></div>
+        <br>
         <c:if test="${pageContext.request.userPrincipal.name != null}">
             <form id="logoutForm" method="POST" action="${contextPath}/logout">
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             </form>
-            <div class="btn btn-lg btn-primary btn-block own"><a onclick="document.forms['logoutForm'].submit()">Выйти</a>
+            <div class="btn btn-lg btn-primary btn-block own"><a
+                    onclick="document.forms['logoutForm'].submit()">Выйти</a>
             </div>
         </c:if>
         <a href="${contextPath}/console">Консоль</a>

@@ -59,6 +59,20 @@ public class OculusController {
         return "oculus";
     }
 
+    @RequestMapping(value = {"/constructor"}, method = RequestMethod.GET)
+    public String oculus(@RequestParam("id") long id, Model model) {
+        Constructor constructor = constructorRepository.findOne(id);
+        Map<Constructor, List<Order>> constructorWithNotArchiveOrders =
+                constructor.getOrders().stream().filter(order -> !order.isArchive()).sorted(comparing(Order::getPlannedDate))
+                        .collect(groupingBy(Order::getConstructor));
+        if (constructorWithNotArchiveOrders.isEmpty()) {
+            constructorWithNotArchiveOrders.put(constructor, new ArrayList<>(0));
+        }
+        model.addAttribute("con_ord_map", constructorWithNotArchiveOrders);
+        model.addAttribute("tableHeaders", TableHeader.values());
+        return "oculus";
+    }
+
     @RequestMapping(value = {"/archive"}, method = RequestMethod.GET)
     public String archive(@RequestParam("id") long id, Model model) {
         Constructor constructor = constructorRepository.findOne(id);
@@ -198,6 +212,34 @@ public class OculusController {
                         (constructor) -> constructor.getOrders().stream().filter(Order::isArchive)
                                 .sorted(comparing(Order::getPlannedDate)).collect(toList()), (o1, o2) -> o2, LinkedHashMap::new));
         ByteArrayOutputStream os =  reportPrinter.print(constructorArchiveOrders, true);
+        InputStream input = new ByteArrayInputStream(os.toByteArray());
+        return getResponse(input, getHeaders());
+    }
+
+    @RequestMapping(value = "/arch_print", method = RequestMethod.GET, produces = "application/pdf")
+    public ResponseEntity<InputStreamResource> getArchReport(@RequestParam("id") long id) throws FileNotFoundException {
+        Constructor constructor = constructorRepository.findOne(id);
+        Map<Constructor, List<Order>> constructorArchiveOrders =
+                constructor.getOrders().stream().filter(Order::isArchive).sorted(comparing(Order::getPlannedDate))
+                        .collect(groupingBy(Order::getConstructor));
+        if (constructorArchiveOrders.isEmpty()) {
+            constructorArchiveOrders.put(constructor, new ArrayList<>(0));
+        }
+        ByteArrayOutputStream os =  reportPrinter.print(constructorArchiveOrders, true);
+        InputStream input = new ByteArrayInputStream(os.toByteArray());
+        return getResponse(input, getHeaders());
+    }
+
+    @RequestMapping(value = "/print", method = RequestMethod.GET, produces = "application/pdf")
+    public ResponseEntity<InputStreamResource> getReport(@RequestParam("id") long id) throws FileNotFoundException {
+        Constructor constructor = constructorRepository.findOne(id);
+        Map<Constructor, List<Order>> constructorWithNotArchiveOrders =
+                constructor.getOrders().stream().filter(order -> !order.isArchive()).sorted(comparing(Order::getPlannedDate))
+                        .collect(groupingBy(Order::getConstructor));
+        if (constructorWithNotArchiveOrders.isEmpty()) {
+            constructorWithNotArchiveOrders.put(constructor, new ArrayList<>(0));
+        }
+        ByteArrayOutputStream os =  reportPrinter.print(constructorWithNotArchiveOrders, false);
         InputStream input = new ByteArrayInputStream(os.toByteArray());
         return getResponse(input, getHeaders());
     }

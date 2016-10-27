@@ -30,7 +30,7 @@
                     <tr class="constructor empty">
                         <td>
                             <c:choose>
-                                <c:when test="${isOne}">${constructor.name}</c:when>
+                                <c:when test="${isOne}"><a href="${contextPath}/constructor?id=${constructor.id}">${constructor.name}</a></c:when>
                                 <c:otherwise>
                                     <a href="${contextPath}/archive?id=${constructor.id}">${constructor.name}</a>
                                 </c:otherwise>
@@ -47,7 +47,7 @@
                     <tr class="constructor">
                         <td>
                             <c:choose>
-                                <c:when test="${isOne}">${constructor.name}</c:when>
+                                <c:when test="${isOne}"><a href="${contextPath}/constructor?id=${constructor.id}">${constructor.name}</a></c:when>
                                 <c:otherwise>
                                     <a href="${contextPath}/archive?id=${constructor.id}">${constructor.name}</a>
                                 </c:otherwise>
@@ -64,7 +64,7 @@
                     <tr class="constructor">
                         <td rowspan="${counter}">
                             <c:choose>
-                                <c:when test="${isOne}">${constructor.name}</c:when>
+                                <c:when test="${isOne}"><a href="${contextPath}/constructor?id=${constructor.id}">${constructor.name}</a></c:when>
                                 <c:otherwise>
                                     <a href="${contextPath}/archive?id=${constructor.id}">${constructor.name}</a>
                                 </c:otherwise>
