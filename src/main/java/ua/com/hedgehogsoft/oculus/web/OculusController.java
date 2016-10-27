@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import ua.com.hedgehogsoft.oculus.data.TableHeader;
 import ua.com.hedgehogsoft.oculus.model.Constructor;
 import ua.com.hedgehogsoft.oculus.model.Order;
+import ua.com.hedgehogsoft.oculus.print.Printer;
 import ua.com.hedgehogsoft.oculus.print.ReportPrinter;
 import ua.com.hedgehogsoft.oculus.repository.ConstructorRepository;
 import ua.com.hedgehogsoft.oculus.repository.OrderRepository;
@@ -44,7 +45,7 @@ public class OculusController {
     @Autowired
     private OrderValidator orderValidator;
     @Autowired
-    private ReportPrinter reportPrinter;
+    private Printer reportPrinter;
 
     @RequestMapping(value = {"/"}, method = RequestMethod.GET)
     public String oculus(Model model) {
@@ -184,9 +185,8 @@ public class OculusController {
         headers.add("Pragma", "no-cache");
         headers.add("Expires", "0");
 
-        File pdfFile =  reportPrinter.print(true);
-
-        InputStream input = new FileInputStream(pdfFile);
+        ByteArrayOutputStream os =  reportPrinter.print(true);
+        InputStream input = new ByteArrayInputStream(os.toByteArray());
 
         return ResponseEntity
                 .ok()
