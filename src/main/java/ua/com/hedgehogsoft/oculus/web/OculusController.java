@@ -1,7 +1,6 @@
 package ua.com.hedgehogsoft.oculus.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -14,13 +13,11 @@ import ua.com.hedgehogsoft.oculus.data.TableHeader;
 import ua.com.hedgehogsoft.oculus.model.Constructor;
 import ua.com.hedgehogsoft.oculus.model.Order;
 import ua.com.hedgehogsoft.oculus.print.Printer;
-import ua.com.hedgehogsoft.oculus.print.ReportPrinter;
 import ua.com.hedgehogsoft.oculus.repository.ConstructorRepository;
 import ua.com.hedgehogsoft.oculus.repository.OrderRepository;
 import ua.com.hedgehogsoft.oculus.validator.ConstructorValidator;
 import ua.com.hedgehogsoft.oculus.validator.OrderValidator;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
