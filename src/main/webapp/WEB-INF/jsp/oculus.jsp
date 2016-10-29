@@ -12,7 +12,8 @@
 </head>
 <body>
 <div class="container">
-    <h2 style="text-align: center">Oculus</h2>
+    <h2 style="text-align: center">График</h2>
+    <h3 style="text-align: center">планирования и отслеживания работы конструкторов КБ</h3>
     <c:set var="isOne" value="${con_ord_map.size() == 1}"/>
     <c:set var="constr_id" value="-1"/>
     <table class="table">
@@ -115,6 +116,8 @@
             </c:otherwise>
         </c:choose>
         <div class="btn btn-lg btn-primary btn-block own"><a href="${contextPath}/all_archive">Архив</a></div>
+        <br>
+        <div class="btn btn-lg btn-primary btn-block own"><a href="${contextPath}/report">Отчет</a></div>
         <br>
         <c:if test="${pageContext.request.userPrincipal.name != null}">
             <div class="btn btn-lg btn-primary btn-block own"><a

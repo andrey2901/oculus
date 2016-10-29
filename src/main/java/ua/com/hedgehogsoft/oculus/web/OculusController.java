@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import ua.com.hedgehogsoft.oculus.data.TableHeader;
 import ua.com.hedgehogsoft.oculus.model.Constructor;
 import ua.com.hedgehogsoft.oculus.model.Order;
+import ua.com.hedgehogsoft.oculus.print.PrintType;
 import ua.com.hedgehogsoft.oculus.print.Printer;
 import ua.com.hedgehogsoft.oculus.repository.ConstructorRepository;
 import ua.com.hedgehogsoft.oculus.repository.OrderRepository;
@@ -196,7 +197,7 @@ public class OculusController {
                 constructors.stream().sorted(comparing(Constructor::getName)).collect(toMap(Function.identity(),
                         (constructor) -> constructor.getOrders().stream().filter(order -> !order.isArchive())
                                 .sorted(comparing(Order::getPlannedDate)).collect(toList()), (o1, o2) -> o2, LinkedHashMap::new));
-        ByteArrayOutputStream os =  reportPrinter.print(constructorWithNotArchiveOrders, false);
+        ByteArrayOutputStream os =  reportPrinter.print(constructorWithNotArchiveOrders, PrintType.WORKBOOK);
         InputStream input = new ByteArrayInputStream(os.toByteArray());
         return getResponse(input, getHeaders());
     }
@@ -208,7 +209,7 @@ public class OculusController {
                 constructors.stream().sorted(comparing(Constructor::getName)).collect(toMap(Function.identity(),
                         (constructor) -> constructor.getOrders().stream().filter(Order::isArchive)
                                 .sorted(comparing(Order::getPlannedDate)).collect(toList()), (o1, o2) -> o2, LinkedHashMap::new));
-        ByteArrayOutputStream os =  reportPrinter.print(constructorArchiveOrders, true);
+        ByteArrayOutputStream os =  reportPrinter.print(constructorArchiveOrders, PrintType.ARCHIVE);
         InputStream input = new ByteArrayInputStream(os.toByteArray());
         return getResponse(input, getHeaders());
     }
@@ -222,7 +223,7 @@ public class OculusController {
         if (constructorArchiveOrders.isEmpty()) {
             constructorArchiveOrders.put(constructor, new ArrayList<>(0));
         }
-        ByteArrayOutputStream os =  reportPrinter.print(constructorArchiveOrders, true);
+        ByteArrayOutputStream os =  reportPrinter.print(constructorArchiveOrders, PrintType.ARCHIVE);
         InputStream input = new ByteArrayInputStream(os.toByteArray());
         return getResponse(input, getHeaders());
     }
@@ -236,7 +237,7 @@ public class OculusController {
         if (constructorWithNotArchiveOrders.isEmpty()) {
             constructorWithNotArchiveOrders.put(constructor, new ArrayList<>(0));
         }
-        ByteArrayOutputStream os =  reportPrinter.print(constructorWithNotArchiveOrders, false);
+        ByteArrayOutputStream os =  reportPrinter.print(constructorWithNotArchiveOrders, PrintType.WORKBOOK);
         InputStream input = new ByteArrayInputStream(os.toByteArray());
         return getResponse(input, getHeaders());
     }
@@ -255,6 +256,23 @@ public class OculusController {
         headers.add("Pragma", "no-cache");
         headers.add("Expires", "0");
         return headers;
+    }
+
+    @RequestMapping(value = {"/report"}, method = RequestMethod.GET)
+    public String report() {
+        return "report";
+    }
+
+    @RequestMapping(value = "/print_report", method = RequestMethod.GET, produces = "application/pdf")
+    public ResponseEntity<InputStreamResource> getMonthReport() throws FileNotFoundException {
+        List<Constructor> constructors = constructorRepository.findAll();
+        Map<Constructor, List<Order>> constructorArchiveOrders =
+                constructors.stream().sorted(comparing(Constructor::getName)).collect(toMap(Function.identity(),
+                        (constructor) -> constructor.getOrders().stream().filter(Order::isArchive)
+                                .sorted(comparing(Order::getPlannedDate)).collect(toList()), (o1, o2) -> o2, LinkedHashMap::new));
+        ByteArrayOutputStream os =  reportPrinter.print(constructorArchiveOrders, PrintType.REPORT);
+        InputStream input = new ByteArrayInputStream(os.toByteArray());
+        return getResponse(input, getHeaders());
     }
 
     /*@RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/pdf")
