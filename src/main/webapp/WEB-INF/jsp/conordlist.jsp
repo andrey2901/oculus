@@ -99,11 +99,12 @@
     <div class="fixed">
         <div class="btn btn-lg btn-primary btn-block own"><a href="${contextPath}/">Главная</a></div>
         <c:if test="${pageContext.request.userPrincipal.name != null}">
+            <div class="btn btn-lg btn-primary btn-block own">
+                <a onclick="document.forms['logoutForm'].submit()">Выйти</a>
+            </div>
             <form id="logoutForm" method="POST" action="${contextPath}/logout">
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             </form>
-            <div class="btn btn-lg btn-primary btn-block own"><a onclick="document.forms['logoutForm'].submit()">Выйти</a>
-            </div>
         </c:if>
         <a href="${contextPath}/console">Консоль</a>
     </div>
