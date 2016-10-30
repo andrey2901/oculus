@@ -21,7 +21,7 @@
 <div class="container">
     <h2>Печать отчета</h2>
     <h4><a href="${contextPath}/print_report">Текущий архив</a></h4>
-    <h4><a href="${contextPath}/">Ранее созданный архив</a></h4>
+    <h4><a href="${contextPath}/reportlist">Ранее созданный архив</a></h4>
 </div>
 <script src="${contextPath}/resources/js/jquery.min.js"></script>
 <script src="${contextPath}/resources/js/bootstrap.min.js"></script>

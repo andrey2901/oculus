@@ -7,6 +7,8 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.util.Pair;
+import org.springframework.stereotype.Component;
 import ua.com.hedgehogsoft.oculus.model.Constructor;
 import ua.com.hedgehogsoft.oculus.model.Order;
 
@@ -19,10 +21,12 @@ import java.util.Map;
 import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 
+@Component
 public class FilePrinter {
     private Font font;
     private Font greenFont;
     private Font redFont;
+    private BaseColor ligthGrey = new BaseColor(211, 211, 211);
     private String fileFolderLocation;
 
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
@@ -47,8 +51,9 @@ public class FilePrinter {
 
     public File print(Map<Constructor, List<Order>> constructorsWithOrders) {
         try {
+            Pair<LocalDate, LocalDate> period = getPeriod(constructorsWithOrders);
             Document document = new Document(PageSize.A4, 0, 0, 30, 30);
-            File file = new File(fileFolderLocation + File.separator + "archive");
+            File file = new File(fileFolderLocation + File.separator + "Report_" + period.getFirst().format(formatter) + "_" + period.getSecond().format(formatter) + ".pdf");
             PdfWriter.getInstance(document, new FileOutputStream(file));
             document.open();
             setContent(document, constructorsWithOrders);
@@ -62,33 +67,7 @@ public class FilePrinter {
 
 
     private void setContent(Document document, Map<Constructor, List<Order>> constructorsWithOrders) throws DocumentException {
-
-        LocalDate startDate = null;
-        LocalDate endDate = null;
-        for (Map.Entry<Constructor, List<Order>> entry : constructorsWithOrders.entrySet()) {
-            for (Order order : entry.getValue()) {
-                if (order != null) {
-                    LocalDate date = order.getActualDate();
-                    if (date != null && startDate == null && endDate == null) {
-                        startDate = date;
-                        endDate = date;
-                    }
-                    else if(date != null){
-                        if(date.isBefore(startDate)){
-                            startDate = date;
-                        }
-                        if(date.isAfter(endDate)){
-                            endDate = date;
-                        }
-                    }
-                }
-            }
-        }
-
-        startDate = startDate.with(firstDayOfMonth());
-        endDate = endDate.with(lastDayOfMonth());
-
-
+        Pair<LocalDate, LocalDate> period = getPeriod(constructorsWithOrders);
         Paragraph paragraph = new Paragraph();
         paragraph.setFont(font);
         paragraph.setSpacingAfter(1);
@@ -126,7 +105,7 @@ public class FilePrinter {
         paragraph3.setSpacingAfter(3);
         paragraph3.setSpacingBefore(3);
         paragraph3.setAlignment(Element.ALIGN_CENTER);
-        Chunk chunk4 = new Chunk("за период с " + startDate.format(formatter) + " по " + endDate.format(formatter));
+        Chunk chunk4 = new Chunk("за период с " + period.getFirst().format(formatter) + " по " + period.getSecond().format(formatter));
         paragraph3.add(chunk4);
 
         paragraph.add(paragraph1);
@@ -207,6 +186,7 @@ public class FilePrinter {
                     cell = new PdfPCell(new Phrase(order.getActualDate().format(formatter), greenFont));
                 } else {
                     cell = new PdfPCell(new Phrase(order.getActualDate().format(formatter), redFont));
+                    cell.setBackgroundColor(ligthGrey);
                 }
                 cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -223,7 +203,32 @@ public class FilePrinter {
                 pdfTable.addCell(cell);
             }
         }
-
         document.add(pdfTable);
+    }
+
+    private Pair<LocalDate, LocalDate> getPeriod(Map<Constructor, List<Order>> constructorsWithOrders) {
+        LocalDate startDate = null;
+        LocalDate endDate = null;
+        for (Map.Entry<Constructor, List<Order>> entry : constructorsWithOrders.entrySet()) {
+            for (Order order : entry.getValue()) {
+                if (order != null) {
+                    LocalDate date = order.getActualDate();
+                    if (date != null && startDate == null && endDate == null) {
+                        startDate = date;
+                        endDate = date;
+                    } else if (date != null) {
+                        if (date.isBefore(startDate)) {
+                            startDate = date;
+                        }
+                        if (date.isAfter(endDate)) {
+                            endDate = date;
+                        }
+                    }
+                }
+            }
+        }
+        startDate = startDate.with(firstDayOfMonth());
+        endDate = endDate.with(lastDayOfMonth());
+        return Pair.of(startDate, endDate);
     }
 }

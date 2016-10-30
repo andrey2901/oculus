@@ -16,6 +16,7 @@ import ua.com.hedgehogsoft.oculus.print.PrintType;
 import ua.com.hedgehogsoft.oculus.print.Printer;
 import ua.com.hedgehogsoft.oculus.repository.ConstructorRepository;
 import ua.com.hedgehogsoft.oculus.repository.OrderRepository;
+import ua.com.hedgehogsoft.oculus.service.FileRepository;
 import ua.com.hedgehogsoft.oculus.validator.ConstructorValidator;
 import ua.com.hedgehogsoft.oculus.validator.OrderValidator;
 
@@ -44,6 +45,8 @@ public class OculusController {
     private OrderValidator orderValidator;
     @Autowired
     private Printer reportPrinter;
+    @Autowired
+    private FileRepository fileRepository;
 
     @RequestMapping(value = {"/"}, method = RequestMethod.GET)
     public String oculus(Model model) {
@@ -279,6 +282,13 @@ public class OculusController {
         ByteArrayOutputStream os =  reportPrinter.print(constructorArchiveOrders, PrintType.REPORT);
         InputStream input = new ByteArrayInputStream(os.toByteArray());
         return getResponse(input, getHeaders());
+    }
+
+    @RequestMapping(value = {"/reportlist"}, method = RequestMethod.GET)
+    public String getListReport(Model model) throws IOException {
+        List<String> names = fileRepository.getFileNames();
+        model.addAttribute("names", names);
+        return "reportlist";
     }
 
     /*@RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/pdf")
