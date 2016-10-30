@@ -291,6 +291,18 @@ public class OculusController {
         return "reportlist";
     }
 
+    @RequestMapping(value = {"/reports"}, method = RequestMethod.GET, produces = "application/pdf")
+    public ResponseEntity<InputStreamResource> getReport(@RequestParam("name") String name) throws IOException {
+        File file = fileRepository.getFileByNme(name);
+        HttpHeaders headers = getHeaders();
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentLength(file.length())
+                .contentType(MediaType.parseMediaType("application/pdf"))
+                .body(new InputStreamResource(new FileInputStream(file)));
+    }
+
     /*@RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/pdf")
     public ResponseEntity<InputStreamResource> downloadPDFFile()
             throws IOException {

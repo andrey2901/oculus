@@ -57,6 +57,13 @@ public class ScheduledTasks {
                 printer.print(constructorsWithOrders);
             });
 
+
+            nextExecution = today.withDayOfMonth(5).withMonth(today.getMonthValue() + 1);
+            lastExecuted = today;
+            task.setNextExecution(nextExecution);
+            task.setLastExecuted(lastExecuted);
+            taskRepository.save(task);
+
             System.out.println("!!StartSearch: " + startSearch);
             System.out.println("!!EndSearch: " + endSearch);
             orders.forEach((month, _orders) -> {

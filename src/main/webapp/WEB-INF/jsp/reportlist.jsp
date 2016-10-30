@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 
@@ -14,7 +15,9 @@
 <div class="container">
     <h2 style="text-align: center">Ранее созданные архивы</h2>
     <c:forEach items="${names}" var="name">
-        <h4><a href="${contextPath}/reportlist?name=${name}">${name}</a></h4>
+        <c:set var="start" value="${fn:substring(name, 7, 17)}"/>
+        <c:set var="end" value="${fn:substring(name, 18, 28)}" />
+        <h4><a href="${contextPath}/reports?name=${name}">Отчет с ${start} по ${end}</a></h4>
     </c:forEach>
     <div class="fixed">
         <div class="btn btn-lg btn-primary btn-block own"><a href="${contextPath}/">Главная</a></div>

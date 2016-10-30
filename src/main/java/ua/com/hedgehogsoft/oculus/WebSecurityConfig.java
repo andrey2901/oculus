@@ -49,7 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                     .antMatchers("/resources/**", "/", "/constructor*", "/archive*",
                             "/all_archive", "/print*", "/all_print", "/arch_print*",
-                            "/all_arch_print", "/report").permitAll()
+                            "/all_arch_print", "/report*").permitAll()
                     .anyRequest().authenticated()
                     .and()
                 .formLogin()

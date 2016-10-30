@@ -31,4 +31,13 @@ public class FileRepository {
                 .collect(Collectors.toList());
         return result;
     }
+
+    public File getFileByNme(String name) throws IOException {
+        return Files.list(Paths.get(fileFolderLocation))
+                .filter(Files::isRegularFile)
+                .map(Path::toFile)
+                .filter(file -> file.getName().equals(name))
+                .findFirst()
+                .get();
+    }
 }
