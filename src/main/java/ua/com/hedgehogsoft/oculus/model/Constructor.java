@@ -14,7 +14,7 @@ public class Constructor {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "constructor")
+    @OneToMany(mappedBy = "constructor", cascade = CascadeType.REMOVE)
     private List<Order> orders;
 
     public Long getId() {

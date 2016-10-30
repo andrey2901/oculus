@@ -13,6 +13,8 @@
 <body>
 <div class="container">
     <h2 style="text-align: center">Конструктора/Ордера</h2>
+    <c:set var="isOne" value="${con_ord_map.size() == 1}"/>
+    <c:set var="constr_id" value="-1"/>
     <table class="table">
         <tr>
             <c:forEach items="${tableHeaders}" var="tableHeader">
@@ -24,6 +26,9 @@
             <c:set value="${entry.key}" var="constructor"/>
             <c:set var="orders" value="${entry.value}"/>
             <c:set var="counter" value="${orders.size()}"/>
+            <c:if test="${isOne}">
+                <c:set var="constr_id" value="${constructor.id}"/>
+            </c:if>
             <c:choose>
                 <c:when test="${counter == 0}">
                     <tr class="constructor empty">
@@ -101,6 +106,12 @@
             </c:choose>
         </c:forEach>
     </table>
+    <c:if test="${isOne}">
+        <form id="logoutForm" method="POST" action="${contextPath}/delcon?id=${constr_id}">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <h4 style="text-align: center"><input type="submit" value="Удалить конструктора"/></h4>
+        </form>
+    </c:if>
     <div class="fixed">
         <div class="btn btn-lg btn-primary btn-block own"><a href="${contextPath}/">Главная</a></div>
         <c:if test="${pageContext.request.userPrincipal.name != null}">

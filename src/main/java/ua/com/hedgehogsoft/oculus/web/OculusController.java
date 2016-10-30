@@ -109,8 +109,8 @@ public class OculusController {
         if (bindingResult.hasErrors()) {
             return "addcon";
         }
-        constructorRepository.save(constructor);
-        return "redirect:/console";
+        long id = constructorRepository.save(constructor).getId();
+        return "redirect:/conord?id=" + id;
     }
 
     @RequestMapping(value = {"/conordlist"}, method = RequestMethod.GET)
@@ -188,6 +188,12 @@ public class OculusController {
         Constructor constructor = order.getConstructor();
         orderRepository.delete(id);
         return "redirect:/conord?id=" + constructor.getId();
+    }
+
+    @RequestMapping(value = {"/delcon"}, method = RequestMethod.POST)
+    public String delCon(@RequestParam("id") long id) {
+        constructorRepository.delete(id);
+        return "redirect:/conordlist";
     }
 
     @RequestMapping(value = "/all_print", method = RequestMethod.GET, produces = "application/pdf")
