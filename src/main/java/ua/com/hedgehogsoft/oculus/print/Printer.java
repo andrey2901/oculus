@@ -26,6 +26,7 @@ public class Printer {
     private Font font;
     private Font greenFont;
     private Font redFont;
+    private BaseColor ligthGrey = new BaseColor(211, 211, 211);
 
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
@@ -195,6 +196,7 @@ public class Printer {
                     cell = new PdfPCell(new Phrase(order.getActualDate().format(formatter), greenFont));
                 } else {
                     cell = new PdfPCell(new Phrase(order.getActualDate().format(formatter), redFont));
+                    cell.setBackgroundColor(ligthGrey);
                 }
                 cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -331,6 +333,7 @@ public class Printer {
                     cell = new PdfPCell(new Phrase(actual.isPresent() ? actual.get().format(formatter) : "", greenFont));
                 } else {
                     cell = new PdfPCell(new Phrase(actual.isPresent() ? actual.get().format(formatter) : "", redFont));
+                    cell.setBackgroundColor(ligthGrey);
                 }
                 cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -502,6 +505,7 @@ public class Printer {
                     cell = new PdfPCell(new Phrase(order.getActualDate().format(formatter), greenFont));
                 } else {
                     cell = new PdfPCell(new Phrase(order.getActualDate().format(formatter), redFont));
+                    cell.setBackgroundColor(ligthGrey);
                 }
                 cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
