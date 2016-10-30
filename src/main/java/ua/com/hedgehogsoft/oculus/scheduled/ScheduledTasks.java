@@ -56,25 +56,11 @@ public class ScheduledTasks {
                         .collect(groupingBy(Order::getConstructor));
                 printer.print(constructorsWithOrders);
             });
-
-
             nextExecution = today.withDayOfMonth(5).withMonth(today.getMonthValue() + 1);
             lastExecuted = today;
             task.setNextExecution(nextExecution);
             task.setLastExecuted(lastExecuted);
             taskRepository.save(task);
-
-            System.out.println("!!StartSearch: " + startSearch);
-            System.out.println("!!EndSearch: " + endSearch);
-            orders.forEach((month, _orders) -> {
-                System.out.println("!!Month: " + month);
-                System.out.println("!!Orders:");
-                _orders.forEach(o -> {
-                    System.out.print("!!!!" + o.getOrderNumber());
-                    System.out.print(":");
-                    System.out.println(o.isArchive());
-                });
-            });
         }
     }
 }

@@ -17,7 +17,7 @@
     <link href="${contextPath}/resources/css/bootstrap.min.css" rel="stylesheet">
     <link href="${contextPath}/resources/css/common.css" rel="stylesheet">
     <link href="${contextPath}/resources/css/style.css" rel="stylesheet">
-    <link href="${contextPath}/resources/css/calendar-win2k-cold-1.css" type="text/css" media="all" title="win2k-cold-1" rel="stylesheet" />
+    <link href="${contextPath}/resources/css/calendar-win2k-cold-1.css" type="text/css" media="all" title="win2k-cold-1" rel="stylesheet"/>
     <script src="${contextPath}/resources/js/jquery.min.js"></script>
     <script src="${contextPath}/resources/js/bootstrap.min.js"></script>
     <script src="${contextPath}/resources/js/calendar/calendar.js" type="text/javascript"></script>
@@ -43,7 +43,7 @@
             <div class="form-group ${status.error ? 'has-error' : ''} img_date">
                 <form:input type="text" name="date" id="f_date_1" path="plannedDate" class="form-control" placeholder="Плановая дата исполнения"/>
                 <img src="${contextPath}/resources/img/calendar.gif" id="trigger_1" class="img_date" title="Date selector"
-                     onmouseover="this.style.background='red';" onmouseout="this.style.background=''" />
+                     onmouseover="this.style.background='red';" onmouseout="this.style.background=''"/>
                 <form:errors path="plannedDate"/>
             </div>
         </spring:bind>
@@ -52,7 +52,7 @@
             <div class="form-group ${status.error ? 'has-error' : ''} img_date">
                 <form:input type="text" name="date" id="f_date_2" path="actualDate" class="form-control" placeholder="Фактическая дата исполнения"/>
                 <img src="${contextPath}/resources/img/calendar.gif" id="trigger_2" class="img_date" title="Date selector"
-                     onmouseover="this.style.background='red';" onmouseout="this.style.background=''" />
+                     onmouseover="this.style.background='red';" onmouseout="this.style.background=''"/>
                 <form:errors path="actualDate"/>
             </div>
         </spring:bind>
@@ -74,19 +74,39 @@
         <button class="btn btn-lg btn-primary btn-block" type="submit">Подтвердить</button>
     </form:form>
     <script type="text/javascript">
+        function limitActualDate(date) {
+            var field = document.getElementById("f_date_1");
+            if (field.value && field.value.length > 0) {
+                var dates = field.value.trim().split('.');
+                var plannedDate = new Date(dates[2], dates[1] - 1, dates[0]);
+                return plannedDate > date;
+            }
+            return false;
+        }
+        function checkDates(cal) {
+            var plannedDate = cal.date;
+            var field = document.getElementById("f_date_2");
+            if (field.value && field.value.length > 0) {
+                var dates = field.value.trim().split('.');
+                var actualDate = new Date(dates[2], dates[1] - 1, dates[0]);
+                if (plannedDate > actualDate) {
+                    field.value = plannedDate.print("%d.%m.%Y");
+                }
+            }
+        }
         Calendar.setup({
-            inputField     :    "f_date_1",
-            ifFormat       :    "%d.%m.%Y",
-            button         :    "trigger_1",
-            singleClick    :    true
+            inputField: "f_date_1",
+            ifFormat: "%d.%m.%Y",
+            button: "trigger_1",
+            singleClick: true,
+            onUpdate: checkDates
         });
-    </script>
-    <script type="text/javascript">
         Calendar.setup({
-            inputField     :    "f_date_2",
-            ifFormat       :    "%d.%m.%Y",
-            button         :    "trigger_2",
-            singleClick    :    true
+            inputField: "f_date_2",
+            ifFormat: "%d.%m.%Y",
+            button: "trigger_2",
+            singleClick: true,
+            dateStatusFunc: limitActualDate
         });
     </script>
 </div>
