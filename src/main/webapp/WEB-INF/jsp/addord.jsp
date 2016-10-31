@@ -14,10 +14,11 @@
 
     <title>Create an order</title>
 
-    <link href="${contextPath}/resources/css/bootstrap.min.css" rel="stylesheet">
-    <link href="${contextPath}/resources/css/common.css" rel="stylesheet">
-    <link href="${contextPath}/resources/css/style.css" rel="stylesheet">
+    <link href="${contextPath}/resources/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="${contextPath}/resources/css/common.css" rel="stylesheet" />
     <link href="${contextPath}/resources/css/calendar-win2k-cold-1.css" type="text/css" media="all" title="win2k-cold-1" rel="stylesheet"/>
+    <link href="${contextPath}/resources/css/style.css" rel="stylesheet" />
+    <link href="${contextPath}/resources/css/calendar.css" rel="stylesheet" />
     <script src="${contextPath}/resources/js/jquery.min.js"></script>
     <script src="${contextPath}/resources/js/bootstrap.min.js"></script>
     <script src="${contextPath}/resources/js/calendar/calendar.js" type="text/javascript"></script>

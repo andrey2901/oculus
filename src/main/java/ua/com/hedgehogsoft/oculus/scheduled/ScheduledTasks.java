@@ -43,7 +43,7 @@ public class ScheduledTasks {
         LocalDate nextExecution = task.getNextExecution();
         LocalDate lastExecuted = task.getLastExecuted();
         if (today.isEqual(nextExecution) || today.isAfter(nextExecution)) {
-            LocalDate startSearch = lastExecuted.withMonth(lastExecuted.getMonthValue() - 1).with(lastDayOfMonth());
+            LocalDate startSearch = lastExecuted.minusMonths(1).with(lastDayOfMonth());
             LocalDate endSearch = today.with(firstDayOfMonth());
             Map<Month, List<Order>> orders = orderRepository.findArchived(true).stream()
                     .filter(order -> order.getActualDate().isAfter(startSearch) && order.getActualDate().isBefore(endSearch))
@@ -56,7 +56,12 @@ public class ScheduledTasks {
                         .collect(groupingBy(Order::getConstructor));
                 printer.print(constructorsWithOrders);
             });
-            nextExecution = today.withDayOfMonth(5).withMonth(today.getMonthValue() + 1);
+            orders.forEach((month, _orders) -> {
+                for (Order ord : _orders) {
+                    orderRepository.delete(ord.getId());
+                }
+            });
+            nextExecution = today.plusMonths(1).withDayOfMonth(5);
             lastExecuted = today;
             task.setNextExecution(nextExecution);
             task.setLastExecuted(lastExecuted);
