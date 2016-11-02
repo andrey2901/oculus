@@ -150,15 +150,15 @@ public class OculusController {
     }
 
     @RequestMapping(value = {"/addord"}, method = RequestMethod.POST)
-    public String addOrd(@RequestParam("id") long id, @ModelAttribute("order") Order order, BindingResult bindingResult) {
+    public String addOrd(@RequestParam("con") long conId, @ModelAttribute("order") Order order, BindingResult bindingResult) {
         orderValidator.validate(order, bindingResult);
         if (bindingResult.hasErrors()) {
             return "addord";
         }
-        Constructor constructor = constructorRepository.findOne(id);
+        Constructor constructor = constructorRepository.findOne(conId);
         order.setConstructor(constructor);
         orderRepository.save(order);
-        return "redirect:/conord?id=" + id;
+        return "redirect:/conord?id=" + conId;
     }
 
     @RequestMapping(value = {"/updord"}, method = RequestMethod.GET)
@@ -169,12 +169,12 @@ public class OculusController {
     }
 
     @RequestMapping(value = {"/updord"}, method = RequestMethod.POST, params = "update")
-    public String updOrd(@RequestParam("id") long id, @ModelAttribute("order") Order order, BindingResult bindingResult) {
+    public String updOrd(@RequestParam("ord") long ordId, @ModelAttribute("order") Order order, BindingResult bindingResult) {
         orderValidator.validate(order, bindingResult);
         if (bindingResult.hasErrors()) {
             return "updord";
         }
-        Order _order = orderRepository.findOne(id);
+        Order _order = orderRepository.findOne(ordId);
         Constructor constructor = _order.getConstructor();
         _order.setOrderNumber(order.getOrderNumber());
         _order.setPlannedDate(order.getPlannedDate());
@@ -186,10 +186,10 @@ public class OculusController {
     }
 
     @RequestMapping(value = {"/updord"}, method = RequestMethod.POST, params = "delete")
-    public String delOrd(@RequestParam("id") long id, BindingResult bindingResult) {
-        Order order = orderRepository.findOne(id);
+    public String delOrd(@RequestParam("ord") long ordId) {
+        Order order = orderRepository.findOne(ordId);
         Constructor constructor = order.getConstructor();
-        orderRepository.delete(id);
+        orderRepository.delete(ordId);
         return "redirect:/conord?id=" + constructor.getId();
     }
 

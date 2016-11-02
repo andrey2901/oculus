@@ -31,11 +31,11 @@
 
 <div class="container">
 
-    <form:form method="POST" modelAttribute="order" class="form-signin" action="${contextPath}/addord?id=${constructor_id}">
+    <form:form method="POST" modelAttribute="order" class="form-signin" action="${contextPath}/addord?con=${constructor_id}">
         <h2 class="form-signin-heading">Создать ордер:</h2>
         <spring:bind path="orderNumber">
             <div class="form-group ${status.error ? 'has-error' : ''}">
-                <form:input type="text" path="orderNumber" class="form-control" placeholder="№ заказа" autofocus="true"/>
+                <form:input type="text" path="orderNumber" class="form-control" placeholder="№ заказа"/>
                 <form:errors path="orderNumber"/>
             </div>
         </spring:bind>
