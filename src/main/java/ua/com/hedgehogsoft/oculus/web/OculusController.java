@@ -155,9 +155,15 @@ public class OculusController {
         if (bindingResult.hasErrors()) {
             return "addord";
         }
+        Order _order = new Order();
         Constructor constructor = constructorRepository.findOne(conId);
-        order.setConstructor(constructor);
-        orderRepository.save(order);
+        _order.setOrderNumber(order.getOrderNumber());
+        _order.setPlannedDate(order.getPlannedDate());
+        _order.setActualDate(order.getActualDate());
+        _order.setCipher(order.getCipher());
+        _order.setProductName(order.getProductName());
+        _order.setConstructor(constructor);
+        orderRepository.save(_order);
         return "redirect:/conord?id=" + conId;
     }
 

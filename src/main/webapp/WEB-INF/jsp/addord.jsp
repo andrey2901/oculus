@@ -99,15 +99,13 @@
             inputField: "f_date_1",
             ifFormat: "%d.%m.%Y",
             button: "trigger_1",
-            singleClick: true,
-            onUpdate: checkDates
+            singleClick: true
         });
         Calendar.setup({
             inputField: "f_date_2",
             ifFormat: "%d.%m.%Y",
             button: "trigger_2",
-            singleClick: true,
-            dateStatusFunc: limitActualDate
+            singleClick: true
         });
     </script>
 </div>
