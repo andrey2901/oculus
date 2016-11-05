@@ -15,7 +15,8 @@ public class OrderValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
-        Order order = (Order) target;
+        @SuppressWarnings("unused")
+		Order order = (Order) target;
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "orderNumber", "not.empty");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "plannedDate", "not.empty");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "productName", "not.empty");

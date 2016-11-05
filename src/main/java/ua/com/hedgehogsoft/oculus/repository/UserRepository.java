@@ -7,7 +7,6 @@ import ua.com.hedgehogsoft.oculus.model.User;
 
 @Transactional(readOnly = true)
 public interface UserRepository extends JpaRepository<User, Long> {
-    @SuppressWarnings("JpaQlInspection")
     @Query("SELECT u FROM User u WHERE u.name = ?1")
     User findByName(String name);
 }

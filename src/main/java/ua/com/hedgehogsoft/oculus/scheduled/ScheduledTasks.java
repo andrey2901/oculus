@@ -10,14 +10,10 @@ import ua.com.hedgehogsoft.oculus.print.FilePrinter;
 import ua.com.hedgehogsoft.oculus.repository.OrderRepository;
 import ua.com.hedgehogsoft.oculus.repository.TaskRepository;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
-import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 import static java.util.Comparator.comparing;

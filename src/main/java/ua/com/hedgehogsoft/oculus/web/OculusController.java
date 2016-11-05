@@ -257,7 +257,7 @@ public class OculusController {
         return getResponse(input, getHeaders());
     }
 
-    private ResponseEntity getResponse(InputStream input, HttpHeaders headers){
+    private ResponseEntity<InputStreamResource> getResponse(InputStream input, HttpHeaders headers){
         return ResponseEntity
                 .ok()
                 .headers(headers)

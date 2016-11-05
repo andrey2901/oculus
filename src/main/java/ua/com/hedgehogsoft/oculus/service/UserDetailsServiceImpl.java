@@ -12,7 +12,6 @@ import ua.com.hedgehogsoft.oculus.model.Role;
 import ua.com.hedgehogsoft.oculus.model.User;
 import ua.com.hedgehogsoft.oculus.repository.UserRepository;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
