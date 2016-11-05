@@ -17,74 +17,77 @@ import java.util.Locale;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter
+{
    @Autowired
-    private UserDetailsService userDetailsService;
+   private UserDetailsService userDetailsService;
 
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+   @Bean
+   public BCryptPasswordEncoder bCryptPasswordEncoder()
+   {
+      return new BCryptPasswordEncoder();
+   }
 
-    @Bean
-    public LocaleResolver localeResolver()
-    {
-        SessionLocaleResolver slr = new SessionLocaleResolver();
-        slr.setDefaultLocale(Locale.US);
-        return slr;
-    }
+   @Bean
+   public LocaleResolver localeResolver()
+   {
+      SessionLocaleResolver slr = new SessionLocaleResolver();
+      slr.setDefaultLocale(Locale.US);
+      return slr;
+   }
 
-    @Bean
-    public ReloadableResourceBundleMessageSource messageSource()
-    {
-        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        messageSource.setBasename("classpath:validation");
-        messageSource.setCacheSeconds(3600);
-        return messageSource;
-    }
+   @Bean
+   public ReloadableResourceBundleMessageSource messageSource()
+   {
+      ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+      messageSource.setBasename("classpath:validation");
+      messageSource.setCacheSeconds(3600);
+      return messageSource;
+   }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
-                    .antMatchers("/resources/**", "/", "/constructor*", "/archive*",
-                            "/all_archive", "/print*", "/all_print", "/arch_print*",
-                            "/all_arch_print", "/report*").permitAll()
-                    .anyRequest().authenticated()
-                    .and()
-                .formLogin()
-                    .loginPage("/login")
-                    .permitAll()
-                    .and()
-                .logout()
-                    .permitAll();
-    }
+   @Override
+   protected void configure(HttpSecurity http) throws Exception {
+       http
+               .authorizeRequests()
+                   .antMatchers("/resources/**", "/", "/constructor*", "/archive*",
+                           "/all_archive", "/print*", "/all_print", "/arch_print*",
+                           "/all_arch_print", "/report*").permitAll()
+                   .anyRequest().authenticated()
+                   .and()
+               .formLogin()
+                   .loginPage("/login")
+                   .permitAll()
+                   .and()
+               .logout()
+                   .permitAll();
+   }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
-    }
+   @Autowired
+   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception
+   {
+      auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
+   }
 
-    /*@Bean
-    public HttpMessageConverters customConverters() {
-        ByteArrayHttpMessageConverter arrayHttpMessageConverter = new ByteArrayHttpMessageConverter();
-        return new HttpMessageConverters(arrayHttpMessageConverter);
-    }*/
+   /*@Bean
+   public HttpMessageConverters customConverters() {
+       ByteArrayHttpMessageConverter arrayHttpMessageConverter = new ByteArrayHttpMessageConverter();
+       return new HttpMessageConverters(arrayHttpMessageConverter);
+   }*/
 
-    /*@Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication().withUser("user").password("user").roles("USER");
-        auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
-        auth.inMemoryAuthentication().withUser("superadmin").password("superadmin").roles("SUPERADMIN");
-    }*/
+   /*@Autowired
+   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+       auth.inMemoryAuthentication().withUser("user").password("user").roles("USER");
+       auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
+       auth.inMemoryAuthentication().withUser("superadmin").password("superadmin").roles("SUPERADMIN");
+   }*/
 
-    /*@Override
-    protected void configure(HttpSecurity http) throws Exception {
+   /*@Override
+   protected void configure(HttpSecurity http) throws Exception {
 
-        http.authorizeRequests()
-                .antMatchers("/protected/**").access("hasRole('ROLE_ADMIN')")
-                .antMatchers("/confidential/**").access("hasRole('ROLE_SUPERADMIN')")
-                .and().formLogin().defaultSuccessUrl("/", false);
+       http.authorizeRequests()
+               .antMatchers("/protected/**").access("hasRole('ROLE_ADMIN')")
+               .antMatchers("/confidential/**").access("hasRole('ROLE_SUPERADMIN')")
+               .and().formLogin().defaultSuccessUrl("/", false);
 
-    }*/
+   }*/
 }

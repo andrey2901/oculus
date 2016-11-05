@@ -4,7 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ua.com.hedgehogsoft.oculus.model.Constructor;
 
-public interface ConstructorRepository extends JpaRepository<Constructor, Long> {
-    @Query("SELECT с FROM Constructor с WHERE с.name = ?1")
-    Constructor findByName(String name);
+public interface ConstructorRepository extends JpaRepository<Constructor, Long>
+{
+   @Query("SELECT с FROM Constructor с WHERE с.name = ?1")
+   Constructor findByName(String name);
 }

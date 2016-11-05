@@ -6,7 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import ua.com.hedgehogsoft.oculus.model.User;
 
 @Transactional(readOnly = true)
-public interface UserRepository extends JpaRepository<User, Long> {
-    @Query("SELECT u FROM User u WHERE u.name = ?1")
-    User findByName(String name);
+public interface UserRepository extends JpaRepository<User, Long>
+{
+   @Query("SELECT u FROM User u WHERE u.name = ?1")
+   User findByName(String name);
 }

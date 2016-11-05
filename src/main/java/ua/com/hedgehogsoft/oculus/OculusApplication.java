@@ -8,23 +8,26 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-public class OculusApplication extends SpringBootServletInitializer {
+public class OculusApplication extends SpringBootServletInitializer
+{
 
-    public static void main(String[] args) {
-        SpringApplication.run(OculusApplication.class, args);
-    }
+   public static void main(String[] args)
+   {
+      SpringApplication.run(OculusApplication.class, args);
+   }
 
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(OculusApplication.class);
-    }
+   @Override
+   protected SpringApplicationBuilder configure(SpringApplicationBuilder application)
+   {
+      return application.sources(OculusApplication.class);
+   }
 
-    /*@Bean
-    public ThreadPoolTaskExecutor threadPoolTaskExecutor() {
-        ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
-        threadPoolTaskExecutor.setCorePoolSize(5);
-        threadPoolTaskExecutor.setMaxPoolSize(10);
-        threadPoolTaskExecutor.setQueueCapacity(25);
-        return threadPoolTaskExecutor;
-    }*/
+   /*@Bean
+   public ThreadPoolTaskExecutor threadPoolTaskExecutor() {
+       ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
+       threadPoolTaskExecutor.setCorePoolSize(5);
+       threadPoolTaskExecutor.setMaxPoolSize(10);
+       threadPoolTaskExecutor.setQueueCapacity(25);
+       return threadPoolTaskExecutor;
+   }*/
 }

@@ -16,24 +16,29 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class UserDetailsServiceImpl implements UserDetailsService {
-    @Autowired
-    private UserRepository userRepository;
+public class UserDetailsServiceImpl implements UserDetailsService
+{
+   @Autowired
+   private UserRepository userRepository;
 
-    @Override
-    @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByName(username);
+   @Override
+   @Transactional(readOnly = true)
+   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
+   {
+      User user = userRepository.findByName(username);
 
-        /*Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-        for (Role role : user.getRoles()){
-            grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
-        }*/
+      /*
+      Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
+      for (Role role : user.getRoles()){
+          grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
+      }
+      */
 
-        Set<GrantedAuthority> grantedAuthorities = user.getRoles().stream()
-                .map(Role::getName)
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toSet());
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), grantedAuthorities);
-    }
+      Set<GrantedAuthority> grantedAuthorities = user.getRoles().stream()
+            .map(Role::getName)
+            .map(SimpleGrantedAuthority::new)
+            .collect(Collectors.toSet());
+      return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+            grantedAuthorities);
+   }
 }
